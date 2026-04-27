@@ -3,165 +3,236 @@ const addBookBtn = document.getElementById("add-book-btn");
 const closeBtn = document.getElementById("close-modal");
 const submitForm = document.getElementById("submit-form");
 const saveBookBtn = document.getElementById("add-book");
-const tableBody = document.getElementById("tableBody");
-const emptyState = document.getElementById("emptyState");
-const booksTable = document.getElementById("booksTable");
+const bookTable = document.getElementById("book-table");
+const tableBody = document.getElementById("table-body");
+const emptyState = document.getElementById("empty-state");
 
 const API_BASE = "http://localhost:3000/api";
 
-// Fetch and display all books
-async function loadBooks() {
-  try {
-    const response = await fetch(`${API_BASE}/books`);
-    if (!response.ok) throw new Error("Failed to fetch books");
-    
-    const books = await response.json();
-    displayBooks(books);
-  } catch (error) {
-    console.error("Error loading books:", error);
-    showEmptyState();
-  }
-}
-
-// Display books in table
-function displayBooks(books) {
-  tableBody.innerHTML = "";
-  
-  if (books.length === 0) {
-    showEmptyState();
-    return;
-  }
-  
-  hideEmptyState();
-  
-  books.forEach((book,index) => {
-    const row = createTableRow(book,index);
-    tableBody.appendChild(row);
-  });
-}
-
-// Create table row element
-function createTableRow(book,index) {
-  const row = document.createElement("tr");
-  
-  const imageHtml = book.imageSrc 
-    ? `<img src="${book.imageSrc}" alt="${book.name}" class="table-image" />` 
-    : "<span style='color: #999;'>No image</span>";
-  
-  row.innerHTML = `
-    <td ><strong>${index + 1}</strong></td>
-    <td class="truncate"><strong>${book.name}</strong></td>
-    <td class="truncate">${book.author}</td>
-    <td class="truncate">${book.description}</td>
-    <td><strong>$${parseFloat(book.price).toFixed(2)}</strong></td>
-    <td>${imageHtml}</td>
-    <td>
-      <div class="actions-cell">
-        <button class="btn-action btn-view" onclick="viewBook(${book.id})">View</button>
-        <button class="btn-action btn-edit" onclick="editBook(${book.id})">Edit</button>
-        <button class="btn-action btn-delete" onclick="deleteBook(${book.id})">Delete</button>
-      </div>
-    </td>
-  `;
-  
-  return row;
-}
-
-// Show empty state
+//show empty state
 function showEmptyState() {
   emptyState.classList.add("show");
-  booksTable.style.display = "none";
+  bookTable.style.display = "none";
 }
-
-// Hide empty state
+//hide empty state
 function hideEmptyState() {
   emptyState.classList.remove("show");
-  booksTable.style.display = "table";
+  bookTable.style.display = "table";
 }
 
-// View book details
-function viewBook(bookId) {
-  alert(`View book ${bookId}`);
-  // TODO: Implement view modal
-}
-
-// Edit book
-function editBook(bookId) {
-  alert(`Edit book ${bookId}`);
-  // TODO: Implement edit functionality
-}
-
-// Delete book
-async function deleteBook(bookId) {
-  if (!confirm("Are you sure you want to delete this book?")) {
-    return;
-  }
-  
-  try {
-    const response = await fetch(`${API_BASE}/books/${bookId}`, {
-      method: "DELETE",
-    });
-    
-    if (response.ok) {
-      alert("Book deleted successfully");
-      loadBooks(); // Reload table
-    } else {
-      alert("Failed to delete book");
-    }
-  } catch (error) {
-    console.error("Error deleting book:", error);
-    alert("Error deleting book");
-  }
-}
-
-// Submit books
+// submit books
 async function handleBookSubmit(e) {
   e.preventDefault();
+  submitForm.disabled = true;
   const nameInput = document.getElementById("name").value;
   const descInput = document.getElementById("description").value;
   const authorInput = document.getElementById("author").value;
   const priceInput = document.getElementById("price").value;
-  const image = document.getElementById("image").value;
+  const imageInput = document.getElementById("image");
 
-  if (!nameInput || !descInput || !authorInput || !priceInput) {
-    alert("Please fill in all fields");
+  const file = imageInput.files[0];
+  
+  if (!file) {
+    console.log("No file selected");
     return;
   }
 
+  const reader = new FileReader();
+  
+  reader.onerror = function() {
+    console.log("Error reading file:", reader.error);
+  };
+
+  reader.onload = async function() {
+    const imageSrc = reader.result; // Base64 data URL
+    console.log("Image converted to Base64, length:", imageSrc.length);
+    
+    if (!imageSrc) {
+      console.log("Error: imageSrc is null or empty");
+      return;
+    }
+
+    try {
+      
+      const addNewBooks = await fetch(`${API_BASE}/books`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: nameInput,
+          description: descInput,
+          author: authorInput,
+          price: priceInput,
+          imageSrc, // Base64 data URL
+        }),
+      });
+      // const result = await addNewBooks.json();
+      // console.log("Book added successfully:", result);
+      
+      if (result.success) {
+        // Clear form
+        submitForm.reset();
+        modal.style.display = "none";
+        displayBooks(); // Refresh the books table
+      }
+      
+    } catch (error) {
+      console.log("Error adding book:", error);
+    }finally{
+      addingBook = false;
+    }
+  };
+  
+  reader.readAsDataURL(file);
+  console.log('File selected:', file.name);
+}
+
+// load books
+const loadBooks = async () => {
   try {
-    const response = await fetch(`${API_BASE}/books`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const response = await fetch(`${API_BASE}/books`);
+    if (!response.ok) {
+      console.log("error in getting data");
+      return;
+    }
+
+    const books = await response.json();
+    displayBooks(books);
+  } catch (error) {
+    showEmptyState();
+    console.log(error);
+  }
+};
+
+const displayBooks = (books) => {
+  tableBody.innerHTML = "";
+
+  if (books.length === 0) {
+    console.log("there is no books found");
+    showEmptyState();
+    return;
+  }
+
+  hideEmptyState();
+
+  books.forEach((book, index) => {
+    const row = createHtmlRow(book, index);
+    tableBody.appendChild(row);
+  });
+};
+
+const createHtmlRow = (book, index) => {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><strong>${index + 1}</strong></td>
+    <td><strong>${book.name}</strong></td>
+    <td class='truncate'>${book.author}</td>
+    <td class='truncate'>${book.description}</td>
+    <td class='truncate'>
+      <img class='table-image' src=${book.imageSrc} alt=${book.name} />
+    </td>
+    <td class='truncate'>${book.price}</td>
+    <td>
+      <div class='action-cell'>
+        <button class='btn-action'>View</button>
+        <button class='btn-action' onclick='editBook(${book.id})'>Edit</button>
+        <button class='btn-action ' onclick='deleteBook(${book.id})'>Delete</button>
+        </div>
+        </td>
+        `;
+
+  return row;
+};
+
+
+const nameInput = document.getElementById("name");
+const descInput = document.getElementById("description");
+const authorInput = document.getElementById("author");
+const priceInput = document.getElementById("price");
+const image = document.getElementById("image");
+//edit book function
+async function editBook(bookId) {
+  if (!bookId) {
+    return console.log("missing bookId");
+  }
+  try {
+    const response = await fetch(`${API_BASE}/books/${bookId}`);
+    if (response.ok) {
+      const existingBook = await response.json();
+      
+      if (existingBook) {
+        nameInput.value = existingBook.name;
+        descInput.value = existingBook.description;
+        authorInput.value = existingBook.author;
+        priceInput.value = existingBook.price;
+        image.dataset.bookId = bookId;
+        
+        modal.style.display = "flex";
+        saveBookBtn.onclick = () => handleBookUpdate(bookId);
+      }
+    } else {
+      console.log("Book not found");
+      alert("Unable to load book details");
+    }
+  } catch (error) {
+    console.log("Error fetching book:", error);
+    alert("Error loading book");
+  }
+}
+
+async function handleBookUpdate(bookId) {
+  submitForm.disabled = true;
+  const nameInput = document.getElementById("name").value;
+  const descInput = document.getElementById("description").value;
+  const authorInput = document.getElementById("author").value;
+  const priceInput = document.getElementById("price").value;
+
+  try {
+    const response = await fetch(`${API_BASE}/books/${bookId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: nameInput,
         description: descInput,
         author: authorInput,
         price: priceInput,
-        imageSrc: image,
       }),
-      method: "POST",
     });
-    
+
     if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-      alert("Book added successfully");
-      
-      // Clear form
       submitForm.reset();
-      
-      // Close modal
       modal.style.display = "none";
-      
-      // Reload books table
       loadBooks();
-    } else {
-      alert("Error adding book");
+      alert("Book updated successfully");
+      saveBookBtn.onclick = handleBookSubmit;
     }
   } catch (error) {
-    console.error("Error:", error);
-    alert("Error adding book");
+    console.log("Error updating book:", error);
+    alert("Error updating book");
+  } finally {
+    submitForm.disabled = false;
+  }
+}
+
+//delete function
+async function deleteBook(bookId) {
+  if (!bookId) {
+    return console.log("missing bookId");
+  }
+  try {
+    const response = await fetch(`${API_BASE}/books/${bookId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      console.log("error in deleting book");
+    } else {
+      alert("book deleted successfuly");
+      loadBooks();
+    }
+  } catch (error) {
+    console.log(error);
+    alert("something went wrong deleting book");
   }
 }
 
@@ -179,5 +250,4 @@ closeBtn.addEventListener("click", () => {
 // Handle form submission
 saveBookBtn.addEventListener("click", handleBookSubmit);
 
-// Load books on page load
 document.addEventListener("DOMContentLoaded", loadBooks);

@@ -49,10 +49,12 @@
             </div>
             <div class="form-input">
               <label for="image">image: </label>
-              <input type="text" id="image" name="image" />
+              <input type="file"  id="image" name="image" />
             </div>
             <div class="btn-wrapper">
-                <button class="submit-btn" type="submit" id="add-book">Add book</button>
+              <button class="submit-btn" type="submit" id="add-book">
+                Add book
+              </button>
             </div>
           </form>
         </div>
@@ -63,27 +65,26 @@
           <h2 class="table-title">Books Library</h2>
           <p class="table-subtitle">Manage your book collection</p>
         </div>
-        
+
         <div class="table-container">
-          <table class="books-table" id="booksTable">
+          <table class="books-table" id="book-table">
             <thead>
               <tr>
                 <th>Id</th>
                 <th>Name</th>
                 <th>Author</th>
                 <th>Description</th>
-                <th>Price</th>
                 <th>Image</th>
+                <th>Price</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="tableBody">
-              <!-- Books will be populated here by JavaScript -->
-            </tbody>
+            <tbody id="table-body"></tbody>
           </table>
-          <div class="empty-state" id="emptyState">
-            <p>No books added yet. Click "Add books" to get started!</p>
-          </div>
+        </div>
+        <div class="empty-state" id="empty-state">
+          <p>No books found yet</p>
+          <p>click add book to add</p>
         </div>
       </section>
     </main>
