@@ -31,26 +31,29 @@ app.post("/api/books", (req, res) => {
     return res.status(201).json({ message: "book created susseccfull" });
   });
 });
+
+
 app.put("/api/books/:id", (req, res) => {
-  const { name, description, author, price, imageSrc } = req.body;
-  const {id}= req.params
-  if (!name || !description || !author || !price || !imageSrc) {
-    console.log("all fields are riquired");
-    return res.status(400).json("all fields are riquired");
+  const { name, description, author, price } = req.body;
+  const { id } = req.params;
+  
+  if (!name || !description || !author || !price) {
+    console.log("all fields are required");
+    return res.status(400).json("all fields are required");
   }
-  if(!id){
+  
+  if (!id) {
     return res.status(400).json("missing id");
-    
   }
 
-  const query = `INSERT INTO books (name, description, author, price, imageSrc) VALUES(?,?,?,?,?
-    
-    )`;
-  db.run(query, [name, description, author, price, imageSrc], (err) => {
+  const query = `UPDATE books SET name=?, description=?, author=?, price=? WHERE id=?`;
+  
+  db.run(query, [name, description, author, price, id], (err) => {
     if (err) {
-      return console.log("error in creating book", err);
+      console.log("error in updating book", err);
+      return res.status(500).json({ message: "error in updating book" });
     }
-    return res.status(201).json({ message: "book created susseccfull" });
+    return res.status(200).json({ message: "book updated successfully" });
   });
 });
 

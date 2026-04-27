@@ -24,6 +24,13 @@ function hideEmptyState() {
 async function handleBookSubmit(e) {
   e.preventDefault();
   submitForm.disabled = true;
+  
+  // If editing, call update function instead
+  if (currentEditingBookId) {
+    await handleBookUpdate(currentEditingBookId);
+    return;
+  }
+  
   const nameInput = document.getElementById("name").value;
   const descInput = document.getElementById("description").value;
   const authorInput = document.getElementById("author").value;
@@ -34,6 +41,7 @@ async function handleBookSubmit(e) {
   
   if (!file) {
     console.log("No file selected");
+    submitForm.disabled = false;
     return;
   }
 
@@ -41,6 +49,7 @@ async function handleBookSubmit(e) {
   
   reader.onerror = function() {
     console.log("Error reading file:", reader.error);
+    submitForm.disabled = false;
   };
 
   reader.onload = async function() {
@@ -49,6 +58,7 @@ async function handleBookSubmit(e) {
     
     if (!imageSrc) {
       console.log("Error: imageSrc is null or empty");
+      submitForm.disabled = false;
       return;
     }
 
@@ -67,20 +77,21 @@ async function handleBookSubmit(e) {
           imageSrc, // Base64 data URL
         }),
       });
-      // const result = await addNewBooks.json();
-      // console.log("Book added successfully:", result);
+      
+      const result = await addNewBooks.json();
+      console.log("Book added successfully:", result);
       
       if (result.success) {
         // Clear form
         submitForm.reset();
         modal.style.display = "none";
-        displayBooks(); // Refresh the books table
+        loadBooks(); // Refresh the books table
       }
       
     } catch (error) {
       console.log("Error adding book:", error);
-    }finally{
-      addingBook = false;
+    } finally {
+      submitForm.disabled = false;
     }
   };
   
@@ -151,6 +162,9 @@ const descInput = document.getElementById("description");
 const authorInput = document.getElementById("author");
 const priceInput = document.getElementById("price");
 const image = document.getElementById("image");
+
+let currentEditingBookId = null;
+
 //edit book function
 async function editBook(bookId) {
   if (!bookId) {
@@ -168,8 +182,8 @@ async function editBook(bookId) {
         priceInput.value = existingBook.price;
         image.dataset.bookId = bookId;
         
+        currentEditingBookId = bookId;
         modal.style.display = "flex";
-        saveBookBtn.onclick = () => handleBookUpdate(bookId);
       }
     } else {
       console.log("Book not found");
@@ -203,9 +217,9 @@ async function handleBookUpdate(bookId) {
     if (response.ok) {
       submitForm.reset();
       modal.style.display = "none";
+      currentEditingBookId = null;
       loadBooks();
       alert("Book updated successfully");
-      saveBookBtn.onclick = handleBookSubmit;
     }
   } catch (error) {
     console.log("Error updating book:", error);
@@ -245,6 +259,7 @@ addBookBtn.addEventListener("click", () => {
 closeBtn.addEventListener("click", () => {
   modal.style.display = "none";
   submitForm.reset();
+  currentEditingBookId = null;
 });
 
 // Handle form submission
