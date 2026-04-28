@@ -1,3 +1,5 @@
+import { API_BASE } from "../../lib/index.js";
+
 const modal = document.getElementById("modal");
 const addBookBtn = document.getElementById("add-book-btn");
 const closeBtn = document.getElementById("close-modal");
@@ -7,7 +9,7 @@ const bookTable = document.getElementById("book-table");
 const tableBody = document.getElementById("table-body");
 const emptyState = document.getElementById("empty-state");
 
-const API_BASE = "http://localhost:3000/api";
+
 
 //show empty state
 function showEmptyState() {

@@ -1,6 +1,7 @@
 
 const bookContainer = document.getElementById('book-container');
 const navLink = document.getElementById('navLink');
+const bookCard = document.getElementsByClassName('book-card')
 
 const navLinks = [
     {
@@ -28,6 +29,10 @@ const navLinks = [
 
     }
 ]
+
+let clickedCard = null
+
+const currentPath = window.location.pathname
 
 
 async function displayBooks(){
@@ -71,8 +76,20 @@ async function displayBooks(){
 
         bookElement.appendChild(bookCard);
         bookContainer.appendChild(bookElement);
+        bookElement.addEventListener('click',(e)=>{
+            viewBook(book.id)
+            
+        })
 
     })
+}
+
+function viewBook(bookId) {
+    if(!bookId){
+        return console.log('missing id');
+        
+    }
+    window.location.href = `/frontend/view/?${bookId}`
 }
 
 function displayNavLinks(){
@@ -91,3 +108,4 @@ function displayNavLinks(){
 displayBooks()
 
 displayNavLinks()
+// bookCard.addEventListener('click',viewBook(book.id))
