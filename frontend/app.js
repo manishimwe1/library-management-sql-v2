@@ -2,6 +2,9 @@
 const bookContainer = document.getElementById('book-container');
 const navLink = document.getElementById('navLink');
 const bookCard = document.getElementsByClassName('book-card')
+const profile = document.getElementById('profile')
+const userIcon = document.getElementById('user-icon')
+const signInBtn = document.getElementById('signInBtn')
 
 const navLinks = [
     {
@@ -34,6 +37,11 @@ let clickedCard = null
 
 const currentPath = window.location.pathname
 
+
+signInBtn.addEventListener('click',()=>{
+    window.location.href = '/frontend/sign-in/sign-in.html'
+    
+})
 
 async function displayBooks(){
     const response = await fetch('http://localhost:3000/api/books');
