@@ -131,6 +131,29 @@ body {
     padding-left: 16px;
     border-left: 2px solid var(--border-color);
 }
+#user-icon{
+    display: none;
+}
+
+#signInBtn{
+    display: flex;
+    background-color: var(--primary-color);
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+}
+#signInBtn:hover{
+    background-color: var(--primary-color);
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+}
 
 .profile svg {
     width: 24px;
