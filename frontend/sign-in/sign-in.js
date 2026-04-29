@@ -1,40 +1,47 @@
-import { API_BASE } from "../../lib/index.js";
-
 const emailInput = document.getElementById("email");
-const signUpForm = document.getElementById("signInForm");
 const passwordInput = document.getElementById("password");
-const errorParag = document.getElementById("error");
+const signInForm = document.getElementById("signInForm");
+const message = document.getElementById("message");
+const API_BASE = "http://localhost:3000/api";
+
+// Check if user is already logged in
+window.addEventListener('DOMContentLoaded', () => {
+  const userSession = localStorage.getItem('userSession');
+  if (userSession) {
+    // User is already logged in, redirect to home
+    window.location.href = "/frontend/";
+  }
+});
 
 async function handleSubmitForm(e) {
   const email = emailInput.value;
   const password = passwordInput.value;
   e.preventDefault();
   try {
-    const response = await fetch(`${API_BASE}/auth/${email}`);
+    const response = await fetch(`${API_BASE}/auth/sign-in`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
     if (response.ok) {
-      errorParag.style.display = "none";
-      const user = await response.json();
-      if (password !== user.data.password) {
-        console.log("password does not match");
-        errorParag.style.display = "block";
-        errorParag.innerText = "incorrect password ";
-        return;
-      } else {
-        errorParag.style.display = "none";
-        errorParag.innerText = "";
-        window.localStorage.setItem(
-          "session_user_login",
-          JSON.stringify({
-            value: `secure_token`,
-            createAt: new Date(),
-          }),
-        );
-        window.location.href = "/frontend/";
-      }
+      const data = await response.json();
+      // Store user session in localStorage
+      localStorage.setItem('userSession', JSON.stringify({
+        userId: data.userId,
+        email: data.email,
+        username: data.username
+      }));
+      window.location.href = "/frontend/";
+    } else {
+      const data = await response.json();
+      message.innerText = data.message;
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-signUpForm.addEventListener("submit", handleSubmitForm);
+signInForm.addEventListener("submit", handleSubmitForm);

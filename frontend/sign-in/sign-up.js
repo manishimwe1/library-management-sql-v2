@@ -1,3 +1,4 @@
+
 const userNameInput = document.getElementById("userName");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -15,13 +16,13 @@ emailInput.addEventListener("focus", () => {
 const handleSubmitForm = async (e) => {
   e.preventDefault();
   
-  const userName = userNameInput.value;
+  const username = userNameInput.value;
   const email = emailInput.value;
   const password = passwordInput.value;
   const confirm = confirmPasswordInput.value;
 
   console.log({
-    userName,
+    username,
     password,
     email,
     confirm,
@@ -38,7 +39,7 @@ const handleSubmitForm = async (e) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userName,
+        username,
         email,
         password,
       }),
@@ -51,8 +52,8 @@ const handleSubmitForm = async (e) => {
         window.location.href = "/frontend/sign-in/sign-in.html";
       }
     } else {
-      const message = await response.json();
-      errorParag.innerText = message;
+      const errorData = await response.json();
+      errorParag.innerText = errorData.message || errorData;
       errorParag.style.display = "block";
       formInput.classList.add("error");
     }

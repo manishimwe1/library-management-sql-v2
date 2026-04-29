@@ -1,6 +1,7 @@
 import express from "express";
 import { db } from "./config/db.js";
 import cors from "cors";
+import bycrptjs from "bcryptjs";
 
 const PORT = 3000;
 const app = express();
@@ -14,65 +15,82 @@ app.use(
   }),
 );
 
-app.post("/api/auth", (req, res) => {
-  const { userName, email, password } = req.body;
-  if (!userName || !password || !email) {
+app.post("/api/auth/sign-in", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!password || !email) {
     console.log("all fields are required");
     return res.status(400).json("all fields are required");
   }
-  console.log({ email });
 
-  const existingUser = `SELECT * FROM profile WHERE email = ?`;
+  const userQuery = `SELECT * FROM users WHERE email=?`;
+  db.get(userQuery, [email], (err, rows) => {
+    if (err) {
+      return console.log("error in getting user", err);
+    }
+    
+    if(rows){
+      const hashedPassword = bycrptjs.compareSync(password, rows.password);
 
+      if(hashedPassword){
+        return res.status(200).json({ 
+          message: "logged in successfully",
+          userId: rows.id,
+          email: rows.email,
+          username: rows.username
+        });
+      }else{
+        return res.status(400).json({ message: "invalid password" });
+      }
+      
+
+    }else{
+      return res.status(404).json({
+        message: `User doesn't exist try to sign up`
+      })
+    }
+
+
+  });
+});
+
+app.post("/api/auth", (req, res) => {
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) {
+    console.log("all fields are riquired");
+    return res.status(400).json("all fields are riquired");
+  }
+
+  const existingUser = `SELECT * FROM users WHERE email=?`;
   db.get(existingUser, [email], (err, rows) => {
     if (err) {
-      return console.log("error in getting user by email", err);
+      return console.log("error in getting user", err);
     }
-    console.log(rows);
-    if (!rows) {
-      const query = `INSERT INTO profile (username,email,password) VALUES(?,?,?)`;
+    console.log(rows, "FOR ", email);
 
-      db.run(query, [userName, email, password], (err) => {
+    if (!rows) {
+      const hashedPass = bycrptjs.hashSync(password, 12);
+      const query = `INSERT INTO users (username, email, password) VALUES(?,?,?)`;
+      db.run(query, [username, email, hashedPass], (err) => {
         if (err) {
-          return res.status(400).json({ message: "error in creating profile" });
+          return console.log("error in creating user", err);
         }
-        return res.status(201).json({ message: "profile created susseccfull" });
+        return res.status(201).json({ message: "user created susseccfull" });
       });
     } else {
-      return res.status(400).json("this email already exist");
+      return res.status(400).json({ message: "this email is already exist" });
     }
   });
 });
 
 app.get("/api/auth", (req, res) => {
-  const query = `SELECT * FROM profile`;
+  const query = `SELECT * FROM users`;
 
   db.all(query, [], (err, rows) => {
     if (err) {
-      console.log("error in getting data");
+      console.log("error in getting data",err);
     }
     return res.status(200).json(rows);
-  });
-});
-
-app.get("/api/auth/:email", (req, res) => {
-  const { email } = req.params;
-  console.log(email);
-
-  if (!email) {
-    return console.log("error");
-  }
-  const query = `SELECT * FROM profile WHERE email = ?`;
-
-  db.get(query, [email], (err, rows) => {
-    if (err) {
-      console.log("error in getting data");
-    }
-    console.log(rows);
-    
-    return res.status(200).json({
-      data: rows,
-    });
   });
 });
 
