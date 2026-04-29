@@ -24,7 +24,16 @@
     box-shadow: var(--shadow-md);
     width: 400px;
 }
+#error{
+    color: red;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+}
+.error input{
+    border: 2px solid red !important;
 
+}
 .form-input{
     display: flex;
     flex-direction: column;

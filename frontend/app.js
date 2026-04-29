@@ -117,3 +117,11 @@ displayBooks()
 
 displayNavLinks()
 // bookCard.addEventListener('click',viewBook(book.id))
+function loadSession() {
+  const session=  window.localStorage.getItem("session_user_login")
+  const sessionCreatedAt = new Date(session.createAt)
+  console.log(session.split(','));
+  
+  
+}
+document.addEventListener('DOMContentLoaded',loadSession)
