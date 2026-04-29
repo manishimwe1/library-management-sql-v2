@@ -6,6 +6,36 @@ const profile = document.getElementById('profile')
 const userIcon = document.getElementById('user-icon')
 const signInBtn = document.getElementById('signInBtn')
 
+// Session Management
+function checkUserSession() {
+    const userSession = localStorage.getItem('userSession');
+    if (userSession) {
+        const user = JSON.parse(userSession);
+        // User is logged in
+        signInBtn.style.display = 'none';
+        if (profile) {
+            profile.innerHTML = `
+                <span style="color: white; margin-right: 15px;">Welcome, ${user.username}!</span>
+                <button id="logoutBtn" style="padding: 8px 15px; background-color: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">Logout</button>
+            `;
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+        }
+        return user;
+    } else {
+        // User is not logged in - redirect to sign-in
+        window.location.href = '/frontend/sign-in/sign-in.html';
+        return null;
+    }
+}
+
+function logout() {
+    localStorage.removeItem('userSession');
+    window.location.href = '/frontend/sign-in/sign-in.html';
+}
+
+// Check session on page load
+const currentUser = checkUserSession();
+
 const navLinks = [
     {
         label:'Home',
@@ -104,7 +134,6 @@ function displayNavLinks(){
     navLinks.map((link,i)=>{
         const navLinkElement = document.createElement('li');
         const navLinkHref= document.createElement('a')
-
         navLinkHref.innerText = `${link.label}`
         navLinkHref.href = `${link.link}`
         navLinkElement.className = 'nav-link'
