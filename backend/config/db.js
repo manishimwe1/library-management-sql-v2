@@ -20,6 +20,13 @@ export const db = new sqlite.Database(dbPath, (err) => {
             price REAL NOT NULL,
             imageSrc TEXT NOT NULL
         )`);
+        db.run(`CREATE TABLE IF NOT EXISTS profile (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            email TEXT NOT NULL,
+            password TEXT NOT NULL,
+            profile TEXT
+        )`);
     }
 });
 
