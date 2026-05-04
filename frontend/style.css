@@ -222,6 +222,9 @@ body {
     padding: 32px;
     height: 100%;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .bookSection > div:first-child {
@@ -428,4 +431,34 @@ section {
         max-width: 100%;
         flex: 0 1 auto;
     }
+}
+
+
+.book-category{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.book-category-card{
+    width: 300px;
+    height: 100px;
+    /* background-color: #d4a574; */
+    border: 1px solid grey;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    border-radius: 20px;
+    padding: 20px;
+
+}
+.book-category-card p{
+    font-weight: 600;
+    font-size: 17px;
+}
+.book-category-card:hover{
+    cursor: pointer;
+    background-color: rgb(212, 212, 212);
+    font-size: 22px;
+
 }

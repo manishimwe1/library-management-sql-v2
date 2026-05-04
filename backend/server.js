@@ -15,6 +15,25 @@ app.use(
   }),
 );
 
+app.get("/api/search/:searchValue", (req, res) => {
+  const { searchValue } = req.params;
+
+  console.log(searchValue);
+  
+
+  const searchQuery = `SELECT * FROM books WHERE name LIKE '${searchValue}%'`;
+
+  db.get(searchQuery, (err, rows) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ message: "something went wrong", error: err });
+    }
+    
+    return res.status(200).json({ message: "search data", data: rows });
+  });
+});
+
 app.post("/api/auth/sign-in", (req, res) => {
   const { email, password } = req.body;
 
@@ -28,29 +47,25 @@ app.post("/api/auth/sign-in", (req, res) => {
     if (err) {
       return console.log("error in getting user", err);
     }
-    
-    if(rows){
+
+    if (rows) {
       const hashedPassword = bycrptjs.compareSync(password, rows.password);
 
-      if(hashedPassword){
-        return res.status(200).json({ 
+      if (hashedPassword) {
+        return res.status(200).json({
           message: "logged in successfully",
           userId: rows.id,
           email: rows.email,
-          username: rows.username
+          username: rows.username,
         });
-      }else{
+      } else {
         return res.status(400).json({ message: "invalid password" });
       }
-      
-
-    }else{
+    } else {
       return res.status(404).json({
-        message: `User doesn't exist try to sign up`
-      })
+        message: `User doesn't exist try to sign up`,
+      });
     }
-
-
   });
 });
 
@@ -88,7 +103,7 @@ app.get("/api/auth", (req, res) => {
 
   db.all(query, [], (err, rows) => {
     if (err) {
-      console.log("error in getting data",err);
+      console.log("error in getting data", err);
     }
     return res.status(200).json(rows);
   });

@@ -20,6 +20,9 @@ export const db = new sqlite.Database(dbPath, (err) => {
             price REAL NOT NULL,
             imageSrc TEXT NOT NULL
         )`);
+
+    
+
         db.run(`CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL,
