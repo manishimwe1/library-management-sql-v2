@@ -1,0 +1,29 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.main-content {
+  width: 90%;
+  margin: 10px auto;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  gap: 20px;
+}
+
+.search-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: gray;
+}
+
+#searchText {
+  font-size: 25px;
+  font-weight: 700;
+  color: black;
+  text-transform: capitalize;
+}

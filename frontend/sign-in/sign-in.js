@@ -2,6 +2,8 @@ const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const signInForm = document.getElementById("signInForm");
 const message = document.getElementById("message");
+
+
 const API_BASE = "http://localhost:3000/api";
 
 // Check if user is already logged in
