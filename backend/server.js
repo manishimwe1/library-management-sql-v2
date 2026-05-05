@@ -2,6 +2,7 @@ import express from "express";
 import { db } from "./config/db.js";
 import cors from "cors";
 import bycrptjs from "bcryptjs";
+import path from 'path'
 
 const PORT = 3000;
 const app = express();
