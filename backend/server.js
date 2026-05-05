@@ -7,7 +7,7 @@ import path from 'path'
 const PORT = 3000;
 const app = express();
 app.use(express.json({ limit: "50mb" }));
-app.use(express.static(path.join(process.cwd(), "frontend")));
+app.use(express.static(path.join(process.cwd(), "..", "frontend")));
 
 app.use(
   cors({
@@ -491,6 +491,20 @@ app.delete("/api/books/:id/categories/:categoryId", (req, res) => {
     }
     return res.status(200).json({ message: "category removed from book successfully" });
   });
+});
+
+// Serve the main HTML file for all non-API routes (SPA fallback)
+app.use((req, res, next) => {
+  // Don't serve index.html for API routes
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
+  // Check if the path has a file extension (likely a static file)
+  if (path.extname(req.path).length > 0) {
+    return next();
+  }
+  // Serve index.html for all other routes
+  res.sendFile(path.join(process.cwd(), "..", "frontend", "index.html"));
 });
 
 app.listen(PORT, () => {
