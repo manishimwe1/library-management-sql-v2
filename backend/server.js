@@ -21,6 +21,7 @@ const allowedOrigins = [
   'http://127.0.0.1:5500',
   'http://127.0.0.1:5501',
   'http://localhost:5500',
+  'https://library-management-sql-v2.onrender.com',
   'http://localhost:5501',
   process.env.FRONTEND_URL
 ].filter(Boolean);
