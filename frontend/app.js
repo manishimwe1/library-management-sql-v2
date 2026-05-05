@@ -14,7 +14,7 @@ searchInput.addEventListener("keydown", async (event) => {
 
     const searchValue = searchInput.value;
 
-    window.location.href = `/frontend/search/?${searchValue}`;
+    window.location.href = `/search/?${searchValue}`;
   }
 });
 
@@ -35,14 +35,14 @@ function checkUserSession() {
     return user;
   } else {
     // User is not logged in - redirect to sign-in
-    window.location.href = "/frontend/sign-in/sign-in.html";
+    window.location.href = "/sign-in/sign-in.html";
     return null;
   }
 }
 
 function logout() {
   localStorage.removeItem("userSession");
-  window.location.href = "/frontend/sign-in/sign-in.html";
+  window.location.href = "/sign-in/sign-in.html";
 }
 
 // Check session on page load
@@ -57,12 +57,12 @@ const navLinks = [
   {
     label: "Dashboard",
     active: false,
-    link: "/frontend/dashboard/dashboard.html",
+    link: "/dashboard/dashboard.html",
   },
   {
     label: "Books",
     active: false,
-    link: "/frontend/books",
+    link: "/books",
   },
   {
     label: "Add books",
@@ -76,7 +76,7 @@ let clickedCard = null;
 const currentPath = window.location.pathname;
 
 signInBtn.addEventListener("click", () => {
-  window.location.href = "/frontend/sign-in/sign-in.html";
+  window.location.href = "/sign-in/sign-in.html";
 });
 
 async function displayBooks() {
@@ -128,7 +128,7 @@ function viewBook(bookId) {
   if (!bookId) {
     return console.log("missing id");
   }
-  window.location.href = `/frontend/view/?${bookId}`;
+  window.location.href = `/view/?${bookId}`;
 }
 
 function displayNavLinks() {
