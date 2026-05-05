@@ -8,6 +8,7 @@ const PORT = 3000;
 const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(express.static(path.join(process.cwd(), "..", "frontend")));
+app.use(express.static(path.join(process.cwd(), "..", "lib")));
 
 app.use(
   cors({
