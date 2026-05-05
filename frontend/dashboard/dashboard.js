@@ -8,11 +8,39 @@ const saveBookBtn = document.getElementById("add-book");
 const bookTable = document.getElementById("book-table");
 const tableBody = document.getElementById("table-body");
 const emptyState = document.getElementById("empty-state");
-const categorySelect = document.getElementById("category");
+const categoryChips = document.getElementById("category-chips");
 const newCategoryInput = document.getElementById("new-category");
+const addCategoryBtn = document.getElementById("add-category-btn");
+const categoryHiddenInput = document.getElementById("category");
 
 // Store categories
 let categories = new Set();
+let selectedCategory = null;
+
+// Helper function to get auth headers
+function getAuthHeaders() {
+  const token = localStorage.getItem('authToken');
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  console.log(headers);
+  
+  return headers;
+}
+
+// Check if user is authenticated
+function isAuthenticated() {
+  const token = localStorage.getItem('authToken');
+  return !!token;
+}
+
+// Redirect to sign-in if not authenticated
+if (!isAuthenticated()) {
+  window.location.href = '/sign-in/sign-in.html';
+}
 
 //show empty state
 function showEmptyState() {
@@ -28,7 +56,9 @@ function hideEmptyState() {
 // Load categories from API
 const loadCategories = async () => {
   try {
-    const response = await fetch(`${API_BASE}/categories`);
+    const response = await fetch(`${API_BASE}/categories`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) {
       console.log("error in getting categories");
       return;
@@ -39,36 +69,61 @@ const loadCategories = async () => {
     categoriesData.forEach(cat => {
       categories.add(cat.name);
     });
-    updateCategorySelect();
+    renderCategoryChips();
   } catch (error) {
     console.log("error loading categories:", error);
   }
 };
 
-// Update category select options
-function updateCategorySelect() {
-  // Keep the first two options (Select a category and Create new category)
-  const defaultOptions = [
-    '<option value="">Select a category</option>',
-    '<option value="new">+ Create new category</option>'
-  ];
+// Render category chips
+function renderCategoryChips() {
+  categoryChips.innerHTML = '';
 
-  // Add existing categories
-  const categoryOptions = Array.from(categories)
-    .sort()
-    .map(category => `<option value="${category}">${category}</option>`);
+  const sortedCategories = Array.from(categories).sort();
 
-  categorySelect.innerHTML = [...defaultOptions, ...categoryOptions].join('');
+  sortedCategories.forEach(category => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'category-chip';
+    chip.textContent = category;
+    chip.dataset.category = category;
+
+    if (selectedCategory === category) {
+      chip.classList.add('selected');
+    }
+
+    chip.addEventListener('click', () => selectCategory(category));
+    categoryChips.appendChild(chip);
+  });
 }
 
-// Handle category selection change
-categorySelect.addEventListener("change", function () {
-  if (this.value === "new") {
-    newCategoryInput.classList.add("show");
+// Select a category
+function selectCategory(category) {
+  selectedCategory = category;
+  categoryHiddenInput.value = category;
+  newCategoryInput.classList.remove('show');
+  newCategoryInput.value = '';
+  renderCategoryChips();
+}
+
+// Add new category button handler
+addCategoryBtn.addEventListener('click', () => {
+  newCategoryInput.classList.toggle('show');
+  if (newCategoryInput.classList.contains('show')) {
     newCategoryInput.focus();
-  } else {
-    newCategoryInput.classList.remove("show");
-    newCategoryInput.value = "";
+  }
+});
+
+// Handle new category input
+newCategoryInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const newCategory = newCategoryInput.value.trim();
+    if (newCategory) {
+      selectCategory(newCategory);
+      categories.add(newCategory);
+      renderCategoryChips();
+    }
   }
 });
 
@@ -90,12 +145,7 @@ async function handleBookSubmit(e) {
   const imageInput = document.getElementById("image");
 
   // Get category value
-  let categoryValue = categorySelect.value;
-  if (categoryValue === "new") {
-    categoryValue = newCategoryInput.value.trim() || "Uncategorized";
-  } else if (!categoryValue) {
-    categoryValue = "Uncategorized";
-  }
+  let categoryValue = selectedCategory || newCategoryInput.value.trim() || "Uncategorized";
 
   const file = imageInput.files[0];
 
@@ -125,9 +175,7 @@ async function handleBookSubmit(e) {
     try {
       const addNewBooks = await fetch(`${API_BASE}/books`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           name: nameInput,
           description: descInput,
@@ -145,12 +193,15 @@ async function handleBookSubmit(e) {
         // Add new category to set if it was created
         if (categoryValue && categoryValue !== "Uncategorized") {
           categories.add(categoryValue);
-          updateCategorySelect();
+          renderCategoryChips();
         }
 
         // Clear form
         submitForm.reset();
         newCategoryInput.classList.remove("show");
+        selectedCategory = null;
+        categoryHiddenInput.value = '';
+        renderCategoryChips();
         modal.style.display = "none";
         loadBooks(); // Refresh the books table
       }
@@ -168,7 +219,9 @@ async function handleBookSubmit(e) {
 // load books
 const loadBooks = async () => {
   try {
-    const response = await fetch(`${API_BASE}/books`);
+    const response = await fetch(`${API_BASE}/books`, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) {
       console.log("error in getting data");
       return;
@@ -255,7 +308,9 @@ async function editBook(bookId) {
     return console.log("missing bookId");
   }
   try {
-    const response = await fetch(`${API_BASE}/books/${bookId}`);
+    const response = await fetch(`${API_BASE}/books/${bookId}`, {
+      headers: getAuthHeaders()
+    });
     if (response.ok) {
       const existingBook = await response.json();
 
@@ -271,17 +326,16 @@ async function editBook(bookId) {
 
         // Check if category exists in our set
         if (categories.has(categoryValue)) {
-          categorySelect.value = categoryValue;
-          newCategoryInput.classList.remove("show");
+          selectCategory(categoryValue);
         } else if (categoryValue !== "Uncategorized") {
           // If it's a new category not in our set, add it and select it
           categories.add(categoryValue);
-          updateCategorySelect();
-          categorySelect.value = categoryValue;
-          newCategoryInput.classList.remove("show");
+          renderCategoryChips();
+          selectCategory(categoryValue);
         } else {
-          categorySelect.value = "";
-          newCategoryInput.classList.remove("show");
+          selectedCategory = null;
+          categoryHiddenInput.value = '';
+          renderCategoryChips();
         }
 
         currentEditingBookId = bookId;
@@ -322,17 +376,12 @@ async function handleBookUpdate(bookId) {
   const priceInput = document.getElementById("price").value;
 
   // Get category value
-  let categoryValue = categorySelect.value;
-  if (categoryValue === "new") {
-    categoryValue = newCategoryInput.value.trim() || "Uncategorized";
-  } else if (!categoryValue) {
-    categoryValue = "Uncategorized";
-  }
+  let categoryValue = selectedCategory || newCategoryInput.value.trim() || "Uncategorized";
 
   try {
     const response = await fetch(`${API_BASE}/books/${bookId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         name: nameInput,
         description: descInput,
@@ -346,11 +395,14 @@ async function handleBookUpdate(bookId) {
       // Add new category to set if it was created
       if (categoryValue && categoryValue !== "Uncategorized") {
         categories.add(categoryValue);
-        updateCategorySelect();
+        renderCategoryChips();
       }
 
       submitForm.reset();
       newCategoryInput.classList.remove("show");
+      selectedCategory = null;
+      categoryHiddenInput.value = '';
+      renderCategoryChips();
       modal.style.display = "none";
       currentEditingBookId = null;
       loadCategories(); // Refresh categories
@@ -373,6 +425,7 @@ async function deleteBook(bookId) {
   try {
     const response = await fetch(`${API_BASE}/books/${bookId}`, {
       method: "DELETE",
+      headers: getAuthHeaders()
     });
     if (!response.ok) {
       console.log("error in deleting book");
@@ -396,6 +449,9 @@ closeBtn.addEventListener("click", () => {
   modal.style.display = "none";
   submitForm.reset();
   newCategoryInput.classList.remove("show");
+  selectedCategory = null;
+  categoryHiddenInput.value = '';
+  renderCategoryChips();
   currentEditingBookId = null;
 });
 

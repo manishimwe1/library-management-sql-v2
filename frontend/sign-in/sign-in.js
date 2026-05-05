@@ -1,17 +1,16 @@
+import { API_BASE } from "../../lib/index.js";
+
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const signInForm = document.getElementById("signInForm");
 const message = document.getElementById("message");
-
-
-const API_BASE = "http://localhost:3000/api";
 
 // Check if user is already logged in
 window.addEventListener('DOMContentLoaded', () => {
   const userSession = localStorage.getItem('userSession');
   if (userSession) {
     // User is already logged in, redirect to home
-    window.location.href = "/frontend/";
+    window.location.href = "/";
   }
 });
 
@@ -30,13 +29,14 @@ async function handleSubmitForm(e) {
 
     if (response.ok) {
       const data = await response.json();
-      // Store user session in localStorage
+      // Store user session and token in localStorage
       localStorage.setItem('userSession', JSON.stringify({
-        userId: data.userId,
-        email: data.email,
-        username: data.username
+        userId: data.user.id,
+        email: data.user.email,
+        username: data.user.username
       }));
-      window.location.href = "/frontend/";
+      localStorage.setItem('authToken', data.token);
+      window.location.href = "/";
     } else {
       const data = await response.json();
       message.innerText = data.message;

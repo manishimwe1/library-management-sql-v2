@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const path = require\\('path'\\); console.log\\('CWD:', process.cwd\\(\\)\\); console.log\\('Lib path:', path.join\\(process.cwd\\(\\), '..', 'lib'\\)\\); console.log\\('Frontend path:', path.join\\(process.cwd\\(\\), '..', 'frontend'\\)\\); console.log\\('Lib exists:', require\\('fs'\\).existsSync\\(path.join\\(process.cwd\\(\\), '..', 'lib'\\)\\)\\);\")",
+      "Bash(npm install *)"
+    ]
+  }
+}
