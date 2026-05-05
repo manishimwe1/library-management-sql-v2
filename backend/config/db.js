@@ -21,7 +21,6 @@ export const db = new sqlite.Database(dbPath, (err) => {
             imageSrc TEXT NOT NULL
         )`);
 
-    
 
         db.run(`CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -9,7 +9,7 @@ app.use(express.json({ limit: "50mb" }));
 
 app.use(
   cors({
-    origin: "http://127.0.0.1:5500",
+    origin: ["http://127.0.0.1:5500",'http://127.0.0.1:5501'],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type"],
   }),
