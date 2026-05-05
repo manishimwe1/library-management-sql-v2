@@ -28,32 +28,50 @@
         <div class="modal-content">
           <div class="modal-title">
             <h2 class="form-title">Add new book</h2>
-            <button type="button" id="close-modal">x</button>
+            <button type="button" id="close-modal" aria-label="Close modal">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
           </div>
           <form action="" class="book-form" id="submit-form">
             <div class="form-input">
-              <label for="name">Name: </label>
-              <input type="text" id="name" name="name" />
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Enter book name" required />
             </div>
             <div class="form-input">
-              <label for="description">Description: </label>
-              <textarea id="description" name="description" rows="4"></textarea>
+              <label for="description">Description</label>
+              <textarea id="description" name="description" rows="3" placeholder="Brief description of the book"></textarea>
             </div>
             <div class="form-input">
-              <label for="author">Author: </label>
-              <input type="text" id="author" name="author" />
+              <label for="author">Author</label>
+              <input type="text" id="author" name="author" placeholder="Author's name" required />
             </div>
             <div class="form-input">
-              <label for="price">Price: </label>
-              <input type="number" id="price" name="price" step="0.01" />
+              <label for="price">Price</label>
+              <input type="number" id="price" name="price" step="0.01" placeholder="0.00" required />
             </div>
             <div class="form-input">
-              <label for="image">image: </label>
-              <input type="file"  id="image" name="image" />
+              <label for="category">Category</label>
+              <div class="category-wrapper">
+                <select id="category" name="category" class="category-select">
+                  <option value="">Select a category</option>
+                  <option value="new">+ Create new category</option>
+                </select>
+                <input type="text" id="new-category" name="new-category" class="new-category-input" placeholder="Enter new category name" />
+              </div>
+            </div>
+            <div class="form-input">
+              <label for="image">Cover Image</label>
+              <div class="file-upload-wrapper">
+                <input type="file" id="image" name="image" accept="image/*" />
+                <span class="file-upload-label">Choose image</span>
+              </div>
             </div>
             <div class="btn-wrapper">
               <button class="submit-btn" type="submit" id="add-book">
-                Add book
+                <span>Add book</span>
               </button>
             </div>
           </form>
@@ -73,6 +91,7 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Author</th>
+                <th>Category</th>
                 <th>Description</th>
                 <th>Image</th>
                 <th>Price</th>

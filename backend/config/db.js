@@ -21,7 +21,6 @@ export const db = new sqlite.Database(dbPath, (err) => {
             imageSrc TEXT NOT NULL
         )`);
 
-    
 
         db.run(`CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,6 +28,20 @@ export const db = new sqlite.Database(dbPath, (err) => {
             email TEXT NOT NULL,
             password TEXT NOT NULL,
             profile TEXT
+        )`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            description TEXT
+        )`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS book_categories (
+            book_id INTEGER NOT NULL,
+            category_id INTEGER NOT NULL,
+            PRIMARY KEY (book_id, category_id),
+            FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+            FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
         )`);
     }
 });
