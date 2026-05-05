@@ -651,41 +651,254 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .content-section {
+        padding: 32px 20px;
+    }
+
+    .table-title {
+        font-size: 36px;
+    }
+
+    .modal-content {
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .dash-nav {
+        padding: 12px 20px;
+    }
+
+    .navlink {
+        gap: 6px;
+    }
+
+    .link {
+        padding: 8px 16px;
+    }
+
+    .link a {
+        font-size: 14px;
+    }
+
+    .books-table th,
+    .books-table td {
+        padding: 14px 12px;
+    }
+
+    .truncate {
+        max-width: 150px;
+    }
+}
+
 @media (max-width: 768px) {
+    .dash-nav {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px 20px;
+        position: relative;
+    }
+
+    .logo {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .navlink {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .content-section {
+        padding: 24px 16px;
+    }
+
     .table-title {
         font-size: 28px;
+    }
+
+    .table-subtitle {
+        font-size: 14px;
+    }
+
+    .table-container {
+        border-radius: 16px;
+        overflow-x: auto;
+    }
+
+    .books-table {
+        min-width: 600px;
     }
 
     .modal-content {
         padding: 24px;
         max-width: 100%;
         margin: 16px;
+        max-height: 95vh;
     }
 
     .form-title {
         font-size: 22px;
     }
 
-    .books-table {
-        font-size: 12px;
+    .form-input input,
+    .form-input textarea {
+        padding: 12px 14px;
+        font-size: 14px;
     }
 
-    .books-table th,
-    .books-table td {
-        padding: 12px 8px;
+    .category-chips {
+        padding: 6px;
+    }
+
+    .category-chip {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .add-category-btn {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .submit-btn {
+        padding: 14px 24px;
+        font-size: 14px;
     }
 
     .action-cell {
         flex-direction: column;
+        gap: 6px;
     }
 
     .btn-action {
         width: 100%;
         justify-content: center;
+        padding: 8px 12px;
+        font-size: 11px;
     }
 
     .table-image {
         width: 40px;
         height: 40px;
+    }
+
+    .empty-state {
+        padding: 60px 16px;
+    }
+
+    .empty-state p {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dash-nav {
+        padding: 12px 16px;
+    }
+
+    .logo img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .logoTitle {
+        font-size: 18px;
+    }
+
+    .link {
+        padding: 6px 12px;
+    }
+
+    .link a {
+        font-size: 13px;
+    }
+
+    .content-section {
+        padding: 20px 12px;
+    }
+
+    .table-title {
+        font-size: 24px;
+    }
+
+    .table-header {
+        margin-bottom: 24px;
+    }
+
+    .modal-content {
+        padding: 20px;
+        margin: 12px;
+        border-radius: 16px;
+    }
+
+    .form-title {
+        font-size: 20px;
+    }
+
+    .form-input label {
+        font-size: 12px;
+    }
+
+    .form-input input,
+    .form-input textarea {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .category-chip {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .add-category-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .add-category-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .new-category-input {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .submit-btn {
+        padding: 12px 20px;
+        font-size: 13px;
+    }
+
+    .books-table th,
+    .books-table td {
+        padding: 10px 8px;
+        font-size: 11px;
+    }
+
+    .books-table th {
+        font-size: 10px;
+    }
+
+    .category-badge {
+        padding: 4px 10px;
+        font-size: 10px;
+    }
+
+    .table-image {
+        width: 32px;
+        height: 32px;
+    }
+
+    .btn-action {
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+
+    .truncate {
+        max-width: 100px;
     }
 }

@@ -1,4 +1,4 @@
-import { API_BASE } from "../lib/index.js";
+import { API_BASE } from "./lib/index.js";
 
 const bookContainer = document.getElementById("book-container");
 const navLink = document.getElementById("navLink");
@@ -80,7 +80,7 @@ signInBtn.addEventListener("click", () => {
 });
 
 async function displayBooks() {
-  const response = await fetch("http://localhost:3000/api/books");
+  const response = await fetch(`${API_BASE}/books`);
   const books = await response.json();
   books.map((book) => {
     const bookElement = document.createElement("div");

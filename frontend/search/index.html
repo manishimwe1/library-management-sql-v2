@@ -1,17 +1,89 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="search.css" />
-    <link rel="stylesheet" href="../style.css">
-    <title>Search page</title>
-  </head>
-  <body>
-    <main class="main-content">
-      <h2 class="search-title">Search: <span id="searchText"></span></h2>
-      <div id="book-container"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=stylesheet" rel="stylesheet">
+    <title>Search Results - LibraryHub</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        primary: '#1e3a5f',
+                        secondary: '#2d5a8c',
+                        accent: '#d4a574',
+                        'accent-light': '#e8c9a8',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-18">
+                <a href="../index.html" class="flex items-center gap-3 text-xl sm:text-2xl font-serif font-bold text-primary hover:-translate-y-0.5 transition-transform">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-9 sm:h-9">
+                        <rect width="32" height="32" rx="8" fill="url(#logo-gradient)"/>
+                        <path d="M8 8L12 8L12 24L8 24L8 8Z" fill="white" fill-opacity="0.9"/>
+                        <path d="M14 8L18 8L18 24L14 24L14 8Z" fill="white" fill-opacity="0.7"/>
+                        <path d="M20 8L24 8L24 24L20 24L20 8Z" fill="white" fill-opacity="0.5"/>
+                        <defs>
+                            <linearGradient id="logo-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#1e3a5f"/>
+                                <stop offset="1" stop-color="#2d5a8c"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span>Library<span class="text-accent">Hub</span></span>
+                </a>
+                <div class="flex gap-2 sm:gap-3">
+                    <button onclick="history.back()" class="flex items-center gap-2 px-3 sm:px-5 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm sm:text-base font-medium text-slate-700 hover:bg-white hover:border-accent hover:-translate-y-0.5 transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        <span class="hidden sm:inline">Back</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        <!-- Search Header -->
+        <div class="mb-6 sm:mb-10">
+            <p class="text-sm sm:text-base text-slate-500 font-medium mb-2">Search Results for</p>
+            <h1 id="searchText" class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-800 capitalize"></h1>
+        </div>
+
+        <!-- Results Grid -->
+        <div id="book-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            <!-- Books will be loaded here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-12 sm:py-20">
+            <div class="w-16 sm:w-20 h-16 sm:h-20 mx-auto mb-4 sm:mb-6 bg-slate-100 rounded-full flex items-center justify-center">
+                <svg width="32 sm:40" height="32 sm:40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </div>
+            <h3 class="text-lg sm:text-xl font-semibold text-slate-700 mb-2">No books found</h3>
+            <p class="text-sm sm:text-base text-slate-500">Try searching for something else</p>
+        </div>
     </main>
+
     <script src="./search.js" type="module"></script>
-  </body>
+</body>
 </html>
